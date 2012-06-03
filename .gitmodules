@@ -1,0 +1,6 @@
+[submodule "RestKit"]
+	path = RestKit
+	url = git://github.com/RestKit/RestKit.git
+[submodule "objective-c"]
+	path = objective-c
+	url = git://github.com/cloudapp/objective-c.git
