@@ -12,6 +12,9 @@
 
 #import "SecondViewController.h"
 
+#import <RestKit/RestKit.h>
+#import <DropboxSDK/DropboxSDK.h>
+
 @implementation AppDelegate
 
 @synthesize window = _window;
@@ -29,11 +32,34 @@
         viewController1 = [[FirstViewController alloc] initWithNibName:@"FirstViewController_iPad" bundle:nil];
         viewController2 = [[SecondViewController alloc] initWithNibName:@"SecondViewController_iPad" bundle:nil];
     }
+    
+    DBSession* dbSession =
+    [[DBSession alloc]
+      initWithAppKey:@"vxpu6xno0lh8o03"
+      appSecret:@"lgpd2zsvv4z4au3"
+      root:kDBRootDropbox];
+    [DBSession setSharedSession:dbSession];
+    
+    RKClient *client = [RKClient clientWithBaseURLString:@"http://api.pusherapp.com"];
+    NSLog(@"I am your RKClient singleton : %@", [RKClient sharedClient]);
+    
     self.tabBarController = [[UITabBarController alloc] init];
     self.tabBarController.viewControllers = [NSArray arrayWithObjects:viewController1, viewController2, nil];
     self.window.rootViewController = self.tabBarController;
     [self.window makeKeyAndVisible];
     return YES;
+}
+
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+    if ([[DBSession sharedSession] handleOpenURL:url]) {
+        if ([[DBSession sharedSession] isLinked]) {
+            NSLog(@"App linked successfully!");
+            // At this point you can start making API calls
+        }
+        return YES;
+    }
+    // Add whatever other url handling code your app requires here
+    return NO;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
